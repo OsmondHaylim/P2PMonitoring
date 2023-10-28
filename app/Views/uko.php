@@ -8,7 +8,15 @@
     <div class="container">
         <div class="navbar">
             <a href="#" class="nav_home">Home</a>
-            <a href="#" class="logo">Point to Point Monitoring</a>
+            <a href="#" class="logo right">Point to Point Monitoring</a>
+        </div>
+        <div class="spaces">
+
+        </div>
+        <div class="headers">
+            <h1>Point to Point Monitoring</h1>
+            <h2>Regional Office Bandung</h2>
+            <h3>Last Updated : 30 September 2023</h3>
         </div>
         <table>
             <thead>
@@ -35,5 +43,7 @@
         </table>
     </div>
     
-
+    <div class="footer">
+        
+    </div>
 </body>
