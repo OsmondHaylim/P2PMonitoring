@@ -4,6 +4,8 @@ use CodeIgniter\Model;
 
 class p2pModel extends Model{
     protected $table = 'uko';
+    protected $table2 = 'kc';
+    protected $primaryKey = 'KD_UKO';
     protected $primaryKey = 'KD_UKO';
 
     public function getUko($id = false){
