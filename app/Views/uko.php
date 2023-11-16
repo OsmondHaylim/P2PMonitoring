@@ -6,12 +6,10 @@
 </head>
 <body>
     <div class="container">
+        <div class="spaces"></div>
         <div class="navbar">
-            <a href="#" class="nav_home">Home</a>
-            <a href="#" class="logo right">Point to Point Monitoring</a>
-        </div>
-        <div class="spaces">
-
+            <a href="/" class="nav_home">Home</a>
+            <a href="/" class="logo right">Point to Point Monitoring</a>
         </div>
         <div class="headers">
             <h1>Point to Point Monitoring</h1>
@@ -23,10 +21,24 @@
                 <div class="show_entries">
                     <p>Show</p>
                     <div class="dropdown">
-                        <p>10</p>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="8" height="9" viewBox="0 0 8 9" fill="none">
-                            <path d="M3.62351 6.07L1.22551 3.329C0.942505 3.0065 1.17251 2.5 1.60201 2.5H6.39801C6.49413 2.49992 6.58824 2.52754 6.66906 2.57957C6.74989 2.6316 6.814 2.70582 6.85373 2.79335C6.89346 2.88087 6.90711 2.978 6.89306 3.07309C6.87901 3.16818 6.83785 3.2572 6.77451 3.3295L4.37651 6.0695C4.32957 6.1232 4.2717 6.16625 4.20676 6.19574C4.14182 6.22523 4.07133 6.24049 4.00001 6.24049C3.92868 6.24049 3.85819 6.22523 3.79325 6.19574C3.72831 6.16625 3.67044 6.1232 3.62351 6.0695V6.07Z" fill="#9E9E9E"/>
-                        </svg>
+                        <div class="<?php if ($limit == 5) : ?> current <?php else : ?> dropdown-content hide <?php endif; ?>">
+                            <a href="/1/5">5</a>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="8" height="9" viewBox="0 0 8 9" fill="none">
+                                <path d="M3.62351 6.07L1.22551 3.329C0.942505 3.0065 1.17251 2.5 1.60201 2.5H6.39801C6.49413 2.49992 6.58824 2.52754 6.66906 2.57957C6.74989 2.6316 6.814 2.70582 6.85373 2.79335C6.89346 2.88087 6.90711 2.978 6.89306 3.07309C6.87901 3.16818 6.83785 3.2572 6.77451 3.3295L4.37651 6.0695C4.32957 6.1232 4.2717 6.16625 4.20676 6.19574C4.14182 6.22523 4.07133 6.24049 4.00001 6.24049C3.92868 6.24049 3.85819 6.22523 3.79325 6.19574C3.72831 6.16625 3.67044 6.1232 3.62351 6.0695V6.07Z" fill="#9E9E9E"/>
+                            </svg>
+                        </div>
+                        <div class="<?php if ($limit == 10) : ?> current <?php else : ?> dropdown-content hide <?php endif; ?>">
+                            <a href="/1/10">10</a>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="8" height="9" viewBox="0 0 8 9" fill="none">
+                                <path d="M3.62351 6.07L1.22551 3.329C0.942505 3.0065 1.17251 2.5 1.60201 2.5H6.39801C6.49413 2.49992 6.58824 2.52754 6.66906 2.57957C6.74989 2.6316 6.814 2.70582 6.85373 2.79335C6.89346 2.88087 6.90711 2.978 6.89306 3.07309C6.87901 3.16818 6.83785 3.2572 6.77451 3.3295L4.37651 6.0695C4.32957 6.1232 4.2717 6.16625 4.20676 6.19574C4.14182 6.22523 4.07133 6.24049 4.00001 6.24049C3.92868 6.24049 3.85819 6.22523 3.79325 6.19574C3.72831 6.16625 3.67044 6.1232 3.62351 6.0695V6.07Z" fill="#9E9E9E"/>
+                            </svg>
+                        </div>
+                        <div class="<?php if ($limit == 20) : ?> current <?php else : ?> dropdown-content hide <?php endif; ?>">
+                            <a href="/1/20">20</a>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="8" height="9" viewBox="0 0 8 9" fill="none">
+                                <path d="M3.62351 6.07L1.22551 3.329C0.942505 3.0065 1.17251 2.5 1.60201 2.5H6.39801C6.49413 2.49992 6.58824 2.52754 6.66906 2.57957C6.74989 2.6316 6.814 2.70582 6.85373 2.79335C6.89346 2.88087 6.90711 2.978 6.89306 3.07309C6.87901 3.16818 6.83785 3.2572 6.77451 3.3295L4.37651 6.0695C4.32957 6.1232 4.2717 6.16625 4.20676 6.19574C4.14182 6.22523 4.07133 6.24049 4.00001 6.24049C3.92868 6.24049 3.85819 6.22523 3.79325 6.19574C3.72831 6.16625 3.67044 6.1232 3.62351 6.0695V6.07Z" fill="#9E9E9E"/>
+                            </svg>
+                        </div>
                     </div>
                     <p>entries</p>
                 </div>
@@ -71,35 +83,41 @@
                     </div>
                 </div> 
                 <?php foreach ($uko as $key => $row) : ?>
-                    <div class="rows content">
-                        <div class = "no">
-                            <p><?= ++$key; ?></p>
+                    <a href="/kc/<?= $row->KD_UKO; ?>">
+                        <div class="rows content">
+                            <div class = "no">
+                                <p><?= ++$key; ?></p>
+                            </div>
+                            <div class = "kduko">
+                                <p><?= $row->KD_UKO; ?></p>
+                            </div> 
+                            <div class = "nkc">
+                                <p><?= $row->UKO_Name; ?></p>
+                            </div>
+                            <div class = "stdptp">
+                                <p><?= $row->PTP_Amount; ?></p>
+                            </div>
+                            <div class = "stdptp">
+                                <p><?= $row->PTP_Percentage; ?></p>
+                            </div>
+                            <div class = "right stdptp">
+                                <p><?= number_format($row->OS_PTP, 0, ",","."); ?></p>
+                            </div>
                         </div>
-                        <div class = "kduko">
-                            <p><?= $row->KD_UKO; ?></p>
-                        </div> 
-                        <div class = "nkc">
-                            <p><?= $row->UKO_Name; ?></p>
-                        </div>
-                        <div class = "stdptp">
-                            <p><?= $row->PTP_Amount; ?></p>
-                        </div>
-                        <div class = "stdptp">
-                            <p><?= $row->PTP_Percentage; ?></p>
-                        </div>
-                        <div class = "right stdptp">
-                            <p><?= number_format($row->OS_PTP, 0, ",","."); ?></p>
-                        </div>
-                    </div>
+                    </a>
                 <?php endforeach;?>
             </div>
             <div class="bot_tables">
                 <div class="centerer">
-                    <div class="bot_text">
-                        <p>Previous</p>
-                    </div>
+                    <?php if ($current_page > 1) : ?>
+                        <a href="/<?= $current_page - 1; ?>/<?= $limit; ?>">
+                            <div class="bot_text">
+                                <p>Previous</p>
+                            </div>
+                        </a>
+                    <?php endif; ?>
                     <?php for ($i = 1; $i <= $total_pages; $i++) : ?>
-                        <a href="<?= site_url("/" . $i); ?>">
+                        <a href="/<?= $i; ?>/<?= $limit; ?>">
                             <?php if ($i == $current_page) : ?>
                                 <div class="page_button selected">
                             <?php else : ?>
@@ -109,18 +127,13 @@
                                 </div>
                         </a>
                     <?php endfor; ?>
-                    <!-- <div class="page_button selected">
-                        <p>1</p>
-                    </div>
-                    <div class="page_button">
-                        <p>2</p>
-                    </div>
-                    <div class="page_button">
-                        <p>3</p>
-                    </div> -->
-                    <div class="bot_text">
-                        <p>Next</p>
-                    </div>
+                    <?php if ($current_page < $total_pages) : ?>
+                        <a href="/<?= $current_page + 1; ?>/<?= $limit; ?>">
+                            <div class="bot_text">
+                                <p>Next</p>
+                            </div>
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
