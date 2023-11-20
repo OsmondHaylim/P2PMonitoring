@@ -8,8 +8,7 @@ use App\Models\p2pModel;
 
 class Home extends BaseController
 {
-    public function index($page = 1, $limit = 10):string
-    {
+    public function index($page = 1, $limit = 10):string{
         $model = new p2pModel();
 
         $data['current_page'] = $page;
@@ -24,8 +23,7 @@ class Home extends BaseController
         return view('uko', $data);
     }
 
-    public function kc($fk = 100, $page = 1, $limit = 10):string
-    {
+    public function kc($fk = 100, $page = 1, $limit = 10):string{
         $model = new kcModel();
         $offset = ((int)$page - 1) * $limit;
 
@@ -40,5 +38,9 @@ class Home extends BaseController
         $data['limit'] = $limit;
 
         return view('kc', $data);
+    }
+
+    public function rm():string{
+        return view('rm');
     }
 }
