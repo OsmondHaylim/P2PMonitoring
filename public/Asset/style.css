@@ -14,6 +14,9 @@ h2 {
 h3 {
     font-size: 16px;
 }
+form{
+    padding: 15px 150px;
+}
 
 /* navbar */
 
@@ -298,10 +301,10 @@ h3 {
 
 .rows {
     display: flex;
-    padding: 16px;
+    padding: 10px;
     justify-content: space-between;
     align-items: center;
-    gap: 16px;
+    gap: 10px;
     align-self: stretch;
     
 }
@@ -344,6 +347,12 @@ h3 {
     align-items: flex-start;
     text-align: center;
 }
+.debitur {
+    display: flex;
+    flex: 0 1 200px;
+    align-items: flex-start;
+    gap: 8px;
+}
 
 .kduko {
     display: flex;
@@ -353,7 +362,7 @@ h3 {
     text-align: center;
 }
 
-.no > p, .kduko > p, .nkc > p, .stdptp > p{
+.no > p, .kduko > p, .nkc > p, .stdptp > p, .debitur > p{
     flex: 1 0 0;
     margin-block-start: 0;
     margin-block-end: 0;
@@ -396,6 +405,7 @@ h3 {
     align-items: center;
     gap: 12px;
     align-self: stretch;
+    flex-wrap: wrap;
 }
 
 .centerer > a, .content_tables > a{
