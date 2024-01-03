@@ -5,11 +5,11 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Home::index2/1/10');
-$routes->get('/(:num)/5', 'Home::index2/$1/5');
-$routes->get('/(:num)', 'Home::index2/$1/10');
-$routes->get('/(:num)/10', 'Home::index2/$1/10');
-$routes->get('/(:num)/20', 'Home::index2/$1/20');
+$routes->get('/', 'Home::index3/1/10');
+$routes->get('/(:num)/5', 'Home::index3/$1/5');
+$routes->get('/(:num)', 'Home::index3/$1/10');
+$routes->get('/(:num)/10', 'Home::index3/$1/10');
+$routes->get('/(:num)/20', 'Home::index3/$1/20');
 
 $routes->get('/kc/(:segment)','Home::kc2/$1/1/10');
 $routes->get('/kc/(:segment)/(:num)','Home::kc2/$1/$2/10');
@@ -25,7 +25,8 @@ $routes->get('/rm/(:segment)/(:num)/20','Home::rm2/$1/$2/20');
 
 $routes->get('/rm/all','Home::rm');
 
-$routes->add('/add', 'Home::add');
+$routes->post('/add/(:segment)', 'Home::addP2p/$1');
+
 $routes->add('/edit/$id', 'Home::edit/$1');
 $routes->get('/delete/$id', 'Home::delete/$1');
 $routes->add('/csv', 'Home::addByCSV');

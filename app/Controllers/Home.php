@@ -28,11 +28,25 @@ class Home extends BaseController
         $data['total_pages'] = ceil($data['total_rows'] / $limit);
         return view('uko', $data);
     }
+    public function index3($page = 1, $limit = 10):string{
+        $model = new updatedModel();
+        $offset = ((int)$page - 1) * $limit;
+        $uko = $model->limit($limit, $offset)->home3();
+        $data['uko'] = array_slice($uko, $offset, $limit);
+
+        $data['limit'] = $limit;
+        $data['date'] = date('d F Y', strtotime($model->getLatestDate()->periode));
+
+        $data['current_page'] = $page;
+        $data['total_rows'] = count($uko);
+        $data['total_pages'] = ceil($data['total_rows'] / $limit);
+        return view('uko', $data);
+    }
 
     public function kc2($fk, $page = 1, $limit = 10):string{
         $model = new updatedModel();
         $offset = ((int)$page - 1) * $limit;
-        $kc = $model->limit($limit, $offset)->kc($fk);
+        $kc = $model->limit($limit, $offset)->kc3($fk);
         $data['kc'] = array_slice($kc, $offset, $limit);
 
         $data['limit'] = $limit;
@@ -49,10 +63,8 @@ class Home extends BaseController
         $offset = ((int)$page - 1) * $limit;
         
         $data['current_page'] = $page;
-        
-        
 
-        $result = $model1->rm($rm);
+        $result = $model1->rm3($rm);
         $data['rm'] = array_slice($result, $offset, $limit);
         $result2 = $model->rmData($rm);
         $data['total_rows'] = count($result);
@@ -60,6 +72,16 @@ class Home extends BaseController
 
         $data['total_pages'] = ceil($data['total_rows'] / $limit);
         $data['rmData'] = $result2;
+        if($result2['count_pinjaman'] == 0 || $result2['total_os'] == 0){
+            $data['float_done'] = 0;
+            $data['os_float_done'] = 0;
+        }else{
+            $data['float_done'] = $result2['count_done'] * 100/($result2['count_pinjaman']);
+            $data['os_float_done'] = $result2['os_done'] * 100/($result2['total_os']);
+        }
+        
+        $data['total_not_done'] = $result2['count_pinjaman'] - $result2['count_done'];
+        $data['os_not_done'] = $result2['total_os'] - $result2['os_done'];
         $data['nama_pn'] = $rm;
         $data['limit'] = $limit;
         return view('rm', $data);
@@ -86,11 +108,13 @@ class Home extends BaseController
         if($file != null){
             if ($file->isValid() && $file->getExtension() === 'csv') {
                 $contents = file_get_contents($file->getTempName());
+                $db = \Config\Database::connect();
+                $db->table('daily')->truncate();
                 $model = new updatedModel(); 
                 $this->CsvToDatabase($contents, $model);
-                return redirect()->to('/rm/all');
+                return redirect()->to('/');
             } else {
-                return redirect()->to('/kc/100');
+                return redirect()->to('/');
             }
         }else {
             return redirect()->to('/');
@@ -102,11 +126,13 @@ class Home extends BaseController
 
         if ($file->isValid() && $file->getExtension() === 'csv') {
             $contents = file_get_contents($file->getTempName());
+            $db = \Config\Database::connect();
+            $db->table('monthly')->truncate();
             $model = new monthlyModel(); 
             $this->CsvToDatabase($contents, $model);
-            return redirect()->to('/rm/all');
+            return redirect()->to('/');
         } else {
-            return redirect()->to('/kc/100');
+            return redirect()->to('/');
         }
     }
     public function cabangCSV(){
@@ -114,6 +140,8 @@ class Home extends BaseController
 
         if ($file->isValid() && $file->getExtension() === 'csv') {
             $contents = file_get_contents($file->getTempName());
+            $db = \Config\Database::connect();
+            $db->table('cabang')->truncate();
             $model = new cabangModel(); 
             $lines = explode(PHP_EOL, $contents);
             if(count($lines)){
@@ -132,16 +160,32 @@ class Home extends BaseController
                     }
                 }
             }
-            return redirect()->to('/rm/all');
+            return redirect()->to('/');
         } else {
-            return redirect()->to('/kc/100');
+            return redirect()->to('/');
         }
     }
+    public function addP2p($rm){
+        $norek = $this->request->getPost('no_rek');
+        $keterangan = $this->request->getPost('keterangan');
+        $model = new p2pModel(); 
+        date_default_timezone_set("Asia/Bangkok");
+        
+        $data = [
+            'no_rek' => $norek,
+            'tanggal_update' => date("Y-m-d h:i:sa"),
+            'keterangan' => $keterangan,
+        ];
+        $model->protect(false)->replace($data);
+        
+        return redirect()->to("/rm/$rm");
+    }
+    
     public function CsvToDatabase($contents, $model){
-        $lines = explode("\n", $contents);
+        $lines = explode(PHP_EOL, $contents);
         if(count($lines)){
             foreach ($lines as $line) {
-                $data = explode(',', $line);
+                $data = explode(';', $line);
                 if (isset($data[1])&& !empty($data[1])) {
                     $record = [
                         'periode' => $data[0],

@@ -20,7 +20,7 @@
             </div>
             <div class="right">
                 <h1><?= $nama_pn; ?></h1>
-                <h2><?= $rmData->cabang; ?></h2>
+                <h2><?= $rmData['cabang']; ?></h2>
             </div>
         </div>
         <div class="additional"> 
@@ -38,7 +38,7 @@
                         <p>Plafond</p>
                     </div>
                     <div>
-                        <p>Rp. <?= number_format($rmData->total_pinjaman, 0, '.', '.'); ?> (<?= $rmData->count_pinjaman; ?> Deb)</p>
+                        <p>Rp. <?= number_format($rmData['total_pinjaman'], 0, '.', '.'); ?> (<?= $rmData['count_pinjaman']; ?> Deb)</p>
                     </div>
                 </div>
                 <div class="row">
@@ -46,7 +46,7 @@
                         <p>Baki Debet</p>
                     </div>
                     <div>
-                    <p>Rp. <?= number_format($rmData->total_os, 0, '.', '.'); ?> (<?= $rmData->count_pinjaman; ?> Deb)</p>
+                    <p>Rp. <?= number_format($rmData['total_os'], 0, '.', '.'); ?> (<?= $rmData['count_pinjaman']; ?> Deb)</p>
                     </div>
                 </div>
                 <div class="row">
@@ -54,7 +54,7 @@
                         <p>Lancar</p>
                     </div>
                     <div>
-                    <p>Rp. <?= number_format($rmData->total_os1, 0, '.', '.'); ?> (<?= $rmData->count_os1; ?> Deb)</p>
+                    <p>Rp. <?= number_format($rmData['total_os1'], 0, '.', '.'); ?> (<?= $rmData['count_os1']; ?> Deb)</p>
                     </div>
                 </div>
                 <div class="row">
@@ -62,7 +62,7 @@
                         <p>DPK</p>
                     </div>
                     <div>
-                    <p>Rp. <?= number_format($rmData->total_os2, 0, '.', '.'); ?> (<?= $rmData->count_os2; ?> Deb)</p>
+                    <p>Rp. <?= number_format($rmData['total_os2'], 0, '.', '.'); ?> (<?= $rmData['count_os2']; ?> Deb)</p>
                     </div>
                 </div>
                 <div class="row">
@@ -70,7 +70,7 @@
                         <p>NPL</p>
                     </div>
                     <div>
-                    <p>Rp. <?= number_format($rmData->total_os3, 0, '.', '.'); ?> (<?= $rmData->count_os3; ?> Deb)</p>
+                    <p>Rp. <?= number_format($rmData['total_os3'], 0, '.', '.'); ?> (<?= $rmData['count_os3']; ?> Deb)</p>
                     </div>
                 </div>
             </div>
@@ -79,57 +79,84 @@
                     <p>POINT TO POINT / PAYMENT</p>
                 </div>
                 <div class="tem">
+                    <div class="cap">
+                        <div class="tem">
+                            <div class = "subject">
+                                <p>Rekening</p>
+                            </div>
+                            <div class = "left object">
+                                <p><?=$rmData['count_done']; ?></p>
+                            </div>
+                            <div class = "object">
+                                <p><?=number_format($float_done, 2, ',', '.'); ?>  %</p>
+                            </div>
+                        </div>
+                        <div class="tem">
+                            <div class = "subject">
+                                <p>Out Standing</p>
+                            </div>
+                            <div class = "left object">
+                                <p>Rp. <?=number_format($rmData['os_done'], 0, '.', '.'); ?></p>
+                            </div>
+                            <div class = "object">
+                                <p><?=number_format($os_float_done, 2, ',', '.'); ?>  %</p>
+                            </div>
+                        </div>
+                    </div>
                     <div class="done">
                         <p>Done</p>
                     </div>
+                </div>
+                <div class="tem"> 
                     <div class="cap">
                         <div class="tem">
                             <div class = "subject">
                                 <p>Rekening</p>
                             </div>
-                            <div class = "left object">
-                                <p>$count_done; </p>
-                            </div>
-                            <div class = "object">
-                                <p>$float_done;  %</p>
+                            <div class = "item">
+                                <p><?=$total_not_done; ?></p>
                             </div>
                         </div>
                         <div class="tem">
                             <div class = "subject">
                                 <p>Out Standing</p>
                             </div>
-                            <div class = "left object">
-                                <p>$os_done; </p>
-                            </div>
-                            <div class = "object">
-                                <p>$os_float_done;  %</p>
+                            <div class = "item">
+                                <p>Rp. <?=number_format($os_not_done, 0, '.', '.'); ?> </p>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="tem"> 
                     <div class="not_done">
                         <p>Not Done</p>
                     </div>
-                    <div class="cap">
-                        <div class="tem">
-                            <div class = "subject">
-                                <p>Rekening</p>
-                            </div>
-                            <div class = "item">
-                                <p>$total_not_done; </p>
-                            </div>
+                </div>
+            </div>
+            <div class="tem with_border">
+                <div class="cap">
+                    <div class="tem">
+                        <div class = "subject">
+                            <p>Marked As PTP Today</p>
                         </div>
-                        <div class="tem">
-                            <div class = "subject">
-                                <p>Out Standing</p>
-                            </div>
-                            <div class = "item">
-                                <p>$os_not_done; </p>
-                            </div>
+                        <div class = "item">
+                            <p><?=$rmData['count_marked']; ?></p>
                         </div>
                     </div>
-                        
+                    <div class="tem">
+                        <div class = "subject">
+                            <p>Marked As PTP Yesterday</p>
+                        </div>
+                        <div class = "item">
+                            <p><?=$rmData['count_yesterday']; ?> </p>
+                        </div>
+                    </div>
+                    <div class="tem">
+                        <div class = "subject">
+                            <p>Discrepancy detected</p>
+                        </div>
+                        <div class = "item">
+                            <p><?=$rmData['count_wrong']; ?></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -223,7 +250,7 @@
                     </div>
                 </div> 
                 <?php foreach ($rm as $key => $row) : ?>
-                    <a href="#">
+                    <!-- <a href="#"> -->
                         <div class="rows content">
                             <div class = "no">
                                 <p><?= $key + 1 + ($limit * ($current_page - 1)); ?></p>
@@ -250,7 +277,20 @@
                                 <p><?= number_format($row->os1 + $row->os2 +$row->os3 +$row->os4 + $row->os5 , 0, ",","."); ?></p>
                             </div>
                             <div class = "no">
-                                <p>In Progress</p>
+                                <button onclick="showForm(<?= $row->no_rek; ?>)">Done</button>
+                            </div>
+                        </div>
+                        <div class="overlay" id="<?= $row->no_rek; ?>" onclick="hideForm(<?= $row->no_rek; ?>)">
+                            <div class="modal" id="modal" onclick="event.stopPropagation();">
+                                <span onclick="hideForm(<?= $row->no_rek; ?>)" style="cursor: pointer; float: right;">&times;</span>
+                                <form id = "hiddenForm" method="post" action="<?= base_url("/add/$nama_pn"); ?>">
+                                    <input type="hidden" name="no_rek" value="<?= $row->no_rek; ?>">
+
+                                    <label for="keterangan">keterangan:</label>
+                                    <input type="keterangan" name="keterangan" id="keterangan">
+
+                                    <input type="submit" value="Submit">
+                                </form>
                             </div>
                         </div>
                     <!-- </a> -->
@@ -312,4 +352,16 @@
             </div>
         </div>
     </div>
+    <script>
+        function showForm(a) {
+            var overlay = document.getElementById(a);
+            overlay.style.display = 'flex';
+        }
+
+        function hideForm(a) {
+            var overlay = document.getElementById(a);
+            overlay.style.display = 'none';
+        }
+    </script>    
 </body>
+

@@ -55,6 +55,7 @@ class updatedModel extends Model{
         $builder->whereIn('table1.kol', [1, 2]);
         $builder->whereNotIn('table1.id', $ids);
         $builder->groupBy('table2.cabang');
+        $builder->orderBy('kd_uko');
 
         $a = $builder->get()->getResult();
 
@@ -63,6 +64,7 @@ class updatedModel extends Model{
         $builder2->join('cabang table2', 'table1.cabang = table2.kd_uker', 'left');
         $builder2->whereIn('table1.kol', [3, 4, 5]);
         $builder2->groupBy('table2.cabang');
+        $builder->orderBy('kd_uko');
 
         $b = $builder2->get()->getResult();
 
@@ -72,6 +74,7 @@ class updatedModel extends Model{
         $builder3->whereIn('table1.kol', [1, 2]);
         $builder3->whereIn('table1.id', $ids);
         $builder3->groupBy('table2.cabang');
+        $builder->orderBy('kd_uko');
 
         $c = $builder3->get()->getResult();
 
@@ -198,6 +201,57 @@ class updatedModel extends Model{
         }
         
         return $joinedResult;
+    }
+
+    public function home3(){
+        $query = "SELECT
+            c.kd_cabang AS kd_uko,
+            c.cabang AS cabang,
+            COUNT(DISTINCT CASE WHEN (d.kol IN (1, 2) AND d.tanggal_bayar > m.tanggal_bayar) OR (u.id IS NOT NULL AND DATE(u.tanggal_update) = CURRENT_DATE) THEN d.id END) AS jlhptp,
+            COUNT(DISTINCT CASE WHEN (d.kol NOT IN (1, 2) OR d.tanggal_bayar <= m.tanggal_bayar) AND (u.id IS NULL OR (u.id IS NOT NULL AND DATE(u.tanggal_update) <> CURRENT_DATE)) THEN d.id END) AS jlhnonptp,
+            SUM(CASE WHEN (d.kol IN (1, 2) AND d.tanggal_bayar > m.tanggal_bayar) OR (u.id IS NOT NULL AND DATE(u.tanggal_update) = CURRENT_DATE) THEN d.os1 + d.os2 + d.os3 + d.os4 + d.os5 ELSE 0 END) AS osptp,
+            SUM(CASE WHEN (d.kol NOT IN (1, 2) OR d.tanggal_bayar <= m.tanggal_bayar) AND (u.id IS NULL OR (u.id IS NOT NULL AND DATE(u.tanggal_update) <> CURRENT_DATE)) THEN d.os1 + d.os2 + d.os3 + d.os4 + d.os5 ELSE 0 END) AS osnonptp,
+            COUNT(DISTINCT CASE WHEN (d.kol IN (1, 2) AND d.tanggal_bayar > m.tanggal_bayar) OR (u.id IS NOT NULL AND DATE(u.tanggal_update) = CURRENT_DATE) THEN d.id END) / COUNT(DISTINCT d.id) * 100 AS persenptp,
+            COUNT(DISTINCT CASE WHEN (d.kol NOT IN (1, 2) OR d.tanggal_bayar <= m.tanggal_bayar) AND (u.id IS NULL OR (u.id IS NOT NULL AND DATE(u.tanggal_update) <> CURRENT_DATE)) THEN d.id END) / COUNT(DISTINCT d.id) * 100 AS persennonptp
+        FROM
+            cabang c
+            LEFT JOIN daily d ON c.kd_uker = d.cabang
+            LEFT JOIN monthly m ON d.no_rek = m.no_rek
+            LEFT JOIN update_p2p u ON d.no_rek = u.no_rek
+        GROUP BY
+            c.kd_cabang, c.cabang
+        ORDER BY
+            kd_uko asc;
+        ";
+        $result = $this->db->query($query)->getResult();
+        return $result;
+    }
+
+    public function kc3($fk){
+        $query = "SELECT
+            d.personal_number AS pn,
+            d.nama_pn AS nama_pn,
+            COUNT(DISTINCT CASE WHEN (d.kol IN (1, 2) AND d.tanggal_bayar > m.tanggal_bayar) OR (u.id IS NOT NULL AND DATE(u.tanggal_update) = CURRENT_DATE) THEN d.id END) AS jlhptp,
+            COUNT(DISTINCT CASE WHEN (d.kol NOT IN (1, 2) OR d.tanggal_bayar <= m.tanggal_bayar) AND (u.id IS NULL OR (u.id IS NOT NULL AND DATE(u.tanggal_update) <> CURRENT_DATE)) THEN d.id END) AS jlhnonptp,
+            SUM(CASE WHEN (d.kol IN (1, 2) AND d.tanggal_bayar > m.tanggal_bayar) OR (u.id IS NOT NULL AND DATE(u.tanggal_update) = CURRENT_DATE) THEN d.os1 + d.os2 + d.os3 + d.os4 + d.os5 ELSE 0 END) AS osptp,
+            SUM(CASE WHEN (d.kol NOT IN (1, 2) OR d.tanggal_bayar <= m.tanggal_bayar) AND (u.id IS NULL OR (u.id IS NOT NULL AND DATE(u.tanggal_update) <> CURRENT_DATE)) THEN d.os1 + d.os2 + d.os3 + d.os4 + d.os5 ELSE 0 END) AS osnonptp,
+            COUNT(DISTINCT CASE WHEN (d.kol IN (1, 2) AND d.tanggal_bayar > m.tanggal_bayar) OR (u.id IS NOT NULL AND DATE(u.tanggal_update) = CURRENT_DATE) THEN d.id END) / COUNT(DISTINCT d.id) * 100 AS persenptp,
+            COUNT(DISTINCT CASE WHEN (d.kol NOT IN (1, 2) OR d.tanggal_bayar <= m.tanggal_bayar) AND (u.id IS NULL OR (u.id IS NOT NULL AND DATE(u.tanggal_update) <> CURRENT_DATE)) THEN d.id END) / COUNT(DISTINCT d.id) * 100 AS persennonptp
+        FROM
+            daily d 
+            LEFT JOIN cabang c ON d.cabang = c.kd_uker
+            LEFT JOIN monthly m ON d.id = m.id
+            LEFT JOIN update_p2p u ON d.no_rek = u.no_rek
+            
+        WHERE
+            c.cabang = '$fk'
+        GROUP BY
+            d.nama_pn
+        ORDER BY
+            d.personal_number asc;
+        ";
+        $result = $this->db->query($query)->getResult();
+        return $result;
     }
     
     public function kc($fk){
@@ -337,38 +391,83 @@ class updatedModel extends Model{
         return $joinedResult;
     }
 
-    public function rm($rm){
-        $query = "SELECT t1.id
-                FROM daily t1
-                LEFT JOIN monthly t3 ON t1.no_rek = t3.no_rek 
-                WHERE t1.tanggal_bayar <= t3.tanggal_bayar";
+    public function rm3($rm){
+        $query = "SELECT d.tanggal_bayar, d.no_rek, d.debitur, d.pinjaman, d.flag, d.kol, d.os1, d.os2, d.os3, d.os4, d.os5
+        FROM
+            daily d 
+            LEFT JOIN monthly m ON d.no_rek = m.no_rek
+            LEFT JOIN update_p2p u ON d.no_rek = u.no_rek
+        WHERE
+            d.nama_pn = '$rm' AND ((d.kol IN (1, 2) AND d.tanggal_bayar <= m.tanggal_bayar) AND (u.id IS NULL OR DATE(u.tanggal_update) < DATE_SUB(CURDATE(), INTERVAL 1 DAY)))
+        ";
+        $result = $this->db->query($query)->getResult();
+        return $result;
+    }
 
-        $commonValues = $this->db->query($query)->getResult();
-        $ids = [];
+    public function rm($rm){
+        $builder3 = $this->db->table('daily t1');
+        $builder3->select('t1.no_rek');
+        $builder3->where("t1.tanggal_bayar <= t2.tanggal_bayar");
+        $builder3->join('monthly t2', 't1.no_rek = t2.no_rek', 'left');
+        $commonValues = $builder3->get()->getResult();
+        // $query = "SELECT t1.no_rek
+        //         FROM daily t1
+        //         LEFT JOIN monthly t3 ON t1.no_rek = t3.no_rek 
+        //         WHERE t1.tanggal_bayar <= t3.tanggal_bayar";
+
+        // $commonValues = $this->db->query($query)->getResult();
+        // $ids = [];
         foreach($commonValues as $row){
-            $ids[] = $row->id;
+            $ids[] = $row->no_rek;
         }
+
+        // $builder2 = $this->db->table('update_p2p');
+        // $builder2->select('no_rek, tanggal_update');
+        // $b = $builder2->get()->getResult();
+        
 
         $builder = $this->db->table('daily');
         $builder->whereIn('kol', [1, 2]);
         $builder->where('nama_pn', $rm);
-        $builder->whereIn('id', $ids);
+        $builder->whereIn('no_rek', $ids);
 
         $a = $builder->get()->getResult();
         return $a;
     }
 
     public function rmData($rm){
-        $builder = $this->db->table('daily table1');
-        $builder->select('table2.cabang as cabang, SUM(pinjaman) as total_pinjaman, COUNT(*) as count_pinjaman, 
-        SUM(table1.os1 + table1.os2 + table1.os3 + table1.os4 + table1.os5) as total_os, 
-        SUM(table1.os1) as total_os1, COUNT(table1.os1) as count_os1, 
-        SUM(table1.os2) as total_os2, COUNT(table1.os2) as count_os2, 
-        SUM(table1.os3 + table1.os4 + table1.os5) as total_os3, COUNT(table1.os3 + table1.os4 + table1.os5) as count_os3');
-        $builder->join('cabang table2', 'table1.cabang = table2.kd_uker', 'left');
-        $builder->where('table1.nama_pn', $rm);
-        $a = $builder->get()->getFirstRow();
-        return $a;
+        $query = "SELECT
+            c.cabang as cabang,
+            SUM(d.pinjaman) as total_pinjaman,
+            COUNT(*) as count_pinjaman,
+            SUM(d.os1 + d.os2 + d.os3 + d.os4 + d.os5) as total_os, 
+            SUM(d.os1) as total_os1, 
+            COUNT(DISTINCT CASE WHEN d.os1 <> 0 THEN d.os1 ELSE 0 END) as count_os1, 
+            SUM(d.os2) as total_os2, 
+            COUNT(DISTINCT CASE WHEN d.os2 <> 0 THEN d.os2 ELSE 0 END) as count_os2, 
+            SUM(d.os3 + d.os4 + d.os5) as total_os3, 
+            COUNT(DISTINCT CASE WHEN (d.os3 + d.os4 + d.os5) <> 0 THEN (d.os3 + d.os4 + d.os5) ELSE 0 END) as count_os3,
+            COUNT(DISTINCT CASE WHEN (d.kol IN (1, 2) AND d.tanggal_bayar > m.tanggal_bayar) OR (u.id IS NOT NULL AND DATE(u.tanggal_update) = CURRENT_DATE) THEN d.id END) AS count_done,
+            COUNT(DISTINCT CASE WHEN (d.kol NOT IN (1, 2) OR d.tanggal_bayar <= m.tanggal_bayar) AND (u.id IS NULL OR (u.id IS NOT NULL AND DATE(u.tanggal_update) <> CURRENT_DATE)) THEN d.id END) AS count_not_done,
+            SUM(DISTINCT CASE WHEN (d.kol IN (1, 2) AND d.tanggal_bayar > m.tanggal_bayar) OR (u.id IS NOT NULL AND DATE(u.tanggal_update) = CURRENT_DATE) THEN d.os1 + d.os2 + d.os3 + d.os4 + d.os5 ELSE 0 END) AS os_done,
+            SUM(DISTINCT CASE WHEN (d.kol NOT IN (1, 2) OR d.tanggal_bayar <= m.tanggal_bayar) AND (u.id IS NULL OR (u.id IS NOT NULL AND DATE(u.tanggal_update) <> CURRENT_DATE)) THEN d.os1 + d.os2 + d.os3 + d.os4 + d.os5 ELSE 0 END) AS os_not_done,
+            COUNT(DISTINCT CASE WHEN u.id IS NOT NULL AND DATE(u.tanggal_update) = CURRENT_DATE THEN u.id END) AS count_marked,
+            COUNT(DISTINCT CASE WHEN u.id IS NOT NULL AND DATE(u.tanggal_update) = DATE_SUB(CURDATE(), INTERVAL 1 DAY) THEN u.id END) AS count_yesterday,
+            COUNT(DISTINCT CASE WHEN u.id IS NOT NULL AND DATE(u.tanggal_update) < DATE_SUB(CURDATE(), INTERVAL 1 DAY) THEN u.id END) AS count_wrong
+        FROM
+            daily d 
+            LEFT JOIN cabang c ON d.cabang = c.kd_uker
+            LEFT JOIN monthly m ON d.id = m.id
+            LEFT JOIN update_p2p u ON d.no_rek = u.no_rek
+        WHERE
+            d.nama_pn = '$rm'
+        GROUP BY
+            d.nama_pn
+        ";
+        $result = $this->db->query($query)->getRowArray();
+        return $result;
     }
+
+    
 
 }

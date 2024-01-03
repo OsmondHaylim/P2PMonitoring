@@ -3,8 +3,10 @@ namespace App\Models;
 use CodeIgniter\Model;
 
 class p2pModel extends Model{
-    protected $table = 'uko';
-    protected $primaryKey = 'KD_UKO';
+    protected $table = 'update_p2p';
+    protected $primaryKey = 'id';
+
+    protected $allowedFields = ['no_rek', 'tanggal_update', 'keterangan'];
 
     // public function getUko(/*$id = false*/){
     //     // if($id === false){
