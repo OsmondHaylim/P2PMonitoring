@@ -231,12 +231,12 @@ class updatedModel extends Model{
         $query = "SELECT
             d.personal_number AS pn,
             d.nama_pn AS nama_pn,
-            COUNT(DISTINCT CASE WHEN (d.kol IN (1, 2) AND d.tanggal_bayar > m.tanggal_bayar) OR (u.id IS NOT NULL AND DATE(u.tanggal_update) = CURRENT_DATE) THEN d.id END) AS jlhptp,
-            COUNT(DISTINCT CASE WHEN (d.kol NOT IN (1, 2) OR d.tanggal_bayar <= m.tanggal_bayar) AND (u.id IS NULL OR (u.id IS NOT NULL AND DATE(u.tanggal_update) <> CURRENT_DATE)) THEN d.id END) AS jlhnonptp,
-            SUM(CASE WHEN (d.kol IN (1, 2) AND d.tanggal_bayar > m.tanggal_bayar) OR (u.id IS NOT NULL AND DATE(u.tanggal_update) = CURRENT_DATE) THEN d.os1 + d.os2 + d.os3 + d.os4 + d.os5 ELSE 0 END) AS osptp,
-            SUM(CASE WHEN (d.kol NOT IN (1, 2) OR d.tanggal_bayar <= m.tanggal_bayar) AND (u.id IS NULL OR (u.id IS NOT NULL AND DATE(u.tanggal_update) <> CURRENT_DATE)) THEN d.os1 + d.os2 + d.os3 + d.os4 + d.os5 ELSE 0 END) AS osnonptp,
-            COUNT(DISTINCT CASE WHEN (d.kol IN (1, 2) AND d.tanggal_bayar > m.tanggal_bayar) OR (u.id IS NOT NULL AND DATE(u.tanggal_update) = CURRENT_DATE) THEN d.id END) / COUNT(DISTINCT d.id) * 100 AS persenptp,
-            COUNT(DISTINCT CASE WHEN (d.kol NOT IN (1, 2) OR d.tanggal_bayar <= m.tanggal_bayar) AND (u.id IS NULL OR (u.id IS NOT NULL AND DATE(u.tanggal_update) <> CURRENT_DATE)) THEN d.id END) / COUNT(DISTINCT d.id) * 100 AS persennonptp
+            COUNT(DISTINCT CASE WHEN (d.kol IN (1, 2) AND d.tanggal_bayar > m.tanggal_bayar) OR (u.id IS NOT NULL AND DATE(u.tanggal_update) > DATE_SUB(CURDATE(), INTERVAL 1 DAY)) THEN d.id END) AS jlhptp,
+            COUNT(DISTINCT CASE WHEN (d.kol NOT IN (1, 2) OR d.tanggal_bayar <= m.tanggal_bayar) AND (u.id IS NULL OR (u.id IS NOT NULL AND DATE(u.tanggal_update) < DATE_SUB(CURDATE(), INTERVAL 1 DAY))) THEN d.id END) AS jlhnonptp,
+            SUM(CASE WHEN (d.kol IN (1, 2) AND d.tanggal_bayar > m.tanggal_bayar) OR (u.id IS NOT NULL AND DATE(u.tanggal_update) > DATE_SUB(CURDATE(), INTERVAL 1 DAY)) THEN d.os1 + d.os2 + d.os3 + d.os4 + d.os5 ELSE 0 END) AS osptp,
+            SUM(CASE WHEN (d.kol NOT IN (1, 2) OR d.tanggal_bayar <= m.tanggal_bayar) AND (u.id IS NULL OR (u.id IS NOT NULL AND DATE(u.tanggal_update) < DATE_SUB(CURDATE(), INTERVAL 1 DAY))) THEN d.os1 + d.os2 + d.os3 + d.os4 + d.os5 ELSE 0 END) AS osnonptp,
+            COUNT(DISTINCT CASE WHEN (d.kol IN (1, 2) AND d.tanggal_bayar > m.tanggal_bayar) OR (u.id IS NOT NULL AND DATE(u.tanggal_update) > DATE_SUB(CURDATE(), INTERVAL 1 DAY)) THEN d.id END) / COUNT(DISTINCT d.id) * 100 AS persenptp,
+            COUNT(DISTINCT CASE WHEN (d.kol NOT IN (1, 2) OR d.tanggal_bayar <= m.tanggal_bayar) AND (u.id IS NULL OR (u.id IS NOT NULL AND DATE(u.tanggal_update) < DATE_SUB(CURDATE(), INTERVAL 1 DAY))) THEN d.id END) / COUNT(DISTINCT d.id) * 100 AS persennonptp
         FROM
             daily d 
             LEFT JOIN cabang c ON d.cabang = c.kd_uker
