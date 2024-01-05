@@ -90,19 +90,6 @@ class Home extends BaseController
     public function admin():string{
         return view('admin');
     }
-
-    public function addByCSV(){
-        $file = $this->request->getFile('csv_file');
-
-        if ($file->isValid() && $file->getExtension() === 'csv') {
-            $contents = file_get_contents($file->getTempName());
-            $model = new centralizedModel(); 
-            $this->CsvToDatabase($contents, $model);
-            return redirect()->to('/rm/all');
-        } else {
-            return redirect()->to('/kc/100');
-        }
-    }
     public function updatedCSV(){
         $file = $this->request->getFile('csv_file_updated');
         if($file != null){
@@ -182,12 +169,13 @@ class Home extends BaseController
     }
     
     public function CsvToDatabase($contents, $model){
+        $records = [];
         $lines = explode(PHP_EOL, $contents);
         if(count($lines)){
             foreach ($lines as $line) {
                 $data = explode(';', $line);
-                if (isset($data[1])&& !empty($data[1])) {
-                    $record = [
+                if (isset($data[1]) && !empty($data[1])) {
+                    $records[$line] = [
                         'periode' => $data[0],
                         'cabang' => $data[1],
                         'mata_uang' => $data[2],
@@ -226,9 +214,9 @@ class Home extends BaseController
                         'kelurahan_usaha' => $data[35],
                         'kode_pos_usaha' => $data[36],
                     ];
-                    $model->insert($record);
                 }
             }
+            $model->insertBatch($records);
         }
     }
 

@@ -131,14 +131,28 @@
                     </div>
                 </div>
             </div>
-            <div class="tem with_border">
+            <div class="cap with_border">
                 <div class="cap">
+                    <div class="tem">
+                        <div class = "subject">
+                            <p></p>
+                        </div>
+                        <div class = "item">
+                            <p>COUNT</p>
+                        </div>
+                        <div class = "item">
+                            <p>OS SUM</p>
+                        </div>
+                    </div>
                     <div class="tem">
                         <div class = "subject">
                             <p>Marked As PTP Today</p>
                         </div>
                         <div class = "item">
                             <p><?=$rmData['count_marked']; ?></p>
+                        </div>
+                        <div class = "item">
+                            <p>Rp. <?=number_format($rmData['sum_marked'], 0, '.', '.'); ?> </p>
                         </div>
                     </div>
                     <div class="tem">
@@ -148,6 +162,9 @@
                         <div class = "item">
                             <p><?=$rmData['count_yesterday']; ?> </p>
                         </div>
+                        <div class = "item">
+                            <p>Rp. <?=number_format($rmData['sum_yesterday'], 0, '.', '.'); ?> </p>
+                        </div>
                     </div>
                     <div class="tem">
                         <div class = "subject">
@@ -156,8 +173,12 @@
                         <div class = "item">
                             <p><?=$rmData['count_wrong']; ?></p>
                         </div>
+                        <div class = "item">
+                            <p>Rp. <?=number_format($rmData['sum_wrong'], 0, '.', '.'); ?> </p>
+                        </div>
                     </div>
                 </div>
+                
             </div>
         </div>
         <div class="texts">

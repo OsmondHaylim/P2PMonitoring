@@ -155,6 +155,7 @@ form{
 
 .object{
     display: flex;
+    padding-right: 30px;
 }
 
 .p2pp{
@@ -184,6 +185,9 @@ form{
 
 .item{
     display: block;
+    padding-right: 30px;
+    width:300px;
+    text-align: right;
 }
 
 .cap{

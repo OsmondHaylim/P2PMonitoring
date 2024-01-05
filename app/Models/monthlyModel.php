@@ -20,5 +20,8 @@ class monthlyModel extends Model{
     public function getAllRm(){
         return $this->builder()->get()->getResult();
     }
-
+    public function insert_batch($data){
+        $query = $this->db->table('monthly');
+        $query->insertBatch($data);
+        }
 }
