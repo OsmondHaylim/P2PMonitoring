@@ -16,14 +16,6 @@ class updatedModel extends Model{
     'personal_number', 'nama_pn', 'kode', 'deskripsi', 'kol', 'rata_os', 'kecamatan', 'kelurahan', 
     'kode_pos', 'kecamatan_usaha', 'kelurahan_usaha', 'kode_pos_usaha'];
 
-    public function getRm($rm){
-        return $this->builder()->where('nama_pn', $rm)->get()->getResult();
-    }
-
-    public function getAllRm(){
-        return $this->builder()->get()->getResult();
-    }
-
     public function getLatestDate(){
         $result = $this->orderBy('periode', 'DESC')->first();
         if (is_array($result)) {
@@ -453,10 +445,10 @@ class updatedModel extends Model{
             SUM(DISTINCT CASE WHEN (d.kol NOT IN (1, 2) OR d.tanggal_bayar <= m.tanggal_bayar) AND (u.id IS NULL OR (u.id IS NOT NULL AND DATE(u.tanggal_update) <> CURRENT_DATE)) THEN d.os1 + d.os2 + d.os3 + d.os4 + d.os5 ELSE 0 END) AS os_not_done,
             COUNT(DISTINCT CASE WHEN u.id IS NOT NULL AND DATE(u.tanggal_update) = CURRENT_DATE THEN u.id END) AS count_marked,
             COUNT(DISTINCT CASE WHEN u.id IS NOT NULL AND DATE(u.tanggal_update) = DATE_SUB(CURDATE(), INTERVAL 1 DAY) THEN u.id END) AS count_yesterday,
-            COUNT(DISTINCT CASE WHEN u.id IS NOT NULL AND DATE(u.tanggal_update) < DATE_SUB(CURDATE(), INTERVAL 1 DAY) THEN u.id END) AS count_wrong,
+            COUNT(DISTINCT CASE WHEN u.id IS NOT NULL AND (DATE(u.tanggal_update) < DATE_SUB(CURDATE() , INTERVAL 1 DAY) AND d.tanggal_bayar <= m.tanggal_bayar) THEN u.id END) AS count_wrong,
             SUM(DISTINCT CASE WHEN u.id IS NOT NULL AND DATE(u.tanggal_update) = CURRENT_DATE THEN (d.os1 + d.os2 + d.os3 + d.os4 + d.os5) ELSE 0 END) AS sum_marked,
             SUM(DISTINCT CASE WHEN u.id IS NOT NULL AND DATE(u.tanggal_update) = DATE_SUB(CURDATE(), INTERVAL 1 DAY) THEN (d.os1 + d.os2 + d.os3 + d.os4 + d.os5) ELSE 0 END) AS sum_yesterday,
-            SUM(DISTINCT CASE WHEN u.id IS NOT NULL AND DATE(u.tanggal_update) < DATE_SUB(CURDATE(), INTERVAL 1 DAY) THEN (d.os1 + d.os2 + d.os3 + d.os4 + d.os5) ELSE 0 END) AS sum_wrong
+            SUM(DISTINCT CASE WHEN u.id IS NOT NULL AND (DATE(u.tanggal_update) < DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND d.tanggal_bayar <= m.tanggal_bayar) THEN (d.os1 + d.os2 + d.os3 + d.os4 + d.os5) ELSE 0 END) AS sum_wrong
         FROM
             daily d 
             LEFT JOIN cabang c ON d.cabang = c.kd_uker
@@ -476,5 +468,5 @@ class updatedModel extends Model{
     $query->insertBatch($data);
     }
     
-
+// kode lainnya
 }

@@ -14,20 +14,6 @@ use function PHPUnit\Framework\isNull;
 
 class Home extends BaseController
 {
-    public function index2($page = 1, $limit = 10):string{
-        $model = new updatedModel();
-        $offset = ((int)$page - 1) * $limit;
-        $uko = $model->limit($limit, $offset)->home();
-        $data['uko'] = array_slice($uko, $offset, $limit);
-
-        $data['limit'] = $limit;
-        $data['date'] = date('d F Y', strtotime($model->getLatestDate()->periode));
-
-        $data['current_page'] = $page;
-        $data['total_rows'] = count($uko);
-        $data['total_pages'] = ceil($data['total_rows'] / $limit);
-        return view('uko', $data);
-    }
     public function index3($page = 1, $limit = 10):string{
         $model = new updatedModel();
         $offset = ((int)$page - 1) * $limit;
@@ -167,7 +153,6 @@ class Home extends BaseController
         
         return redirect()->to("/rm/$rm");
     }
-    
     public function CsvToDatabase($contents, $model){
         $records = [];
         $lines = explode(PHP_EOL, $contents);
@@ -218,113 +203,6 @@ class Home extends BaseController
             }
             $model->insertBatch($records);
         }
-    }
-
-    public function add(){
-        $validation =  \Config\Services::validation();
-        $validation->setRules(['nama_pn' => 'required']);
-        $isDataValid = $validation->withRequest($this->request)->run();
-
-        if($isDataValid){
-            $model = new centralizedModel();
-            $rm = $this->request->getPost('nama_pn');
-            $model->insert([
-                "periode" => $this->request->getPost('periode'),
-                "cabang" => $this->request->getPost('cabang'),
-                "mata_uang" => $this->request->getPost('mata_uang'),
-                "marketing" => $this->request->getPost('marketing'),
-                "tipe_pinjaman" => $this->request->getPost('tipe_pinjaman'),
-                "no_rek" => $this->request->getPost('no_rek'),
-                "debitur" => $this->request->getPost('debitur'),
-                "pinjaman" => $this->request->getPost('pinjaman'),
-                "tanggal_bayar" => $this->request->getPost('tanggal_bayar'),
-                "tanggal_bunga_bayar" => $this->request->getPost('tanggal_bunga_bayar'),
-                "suku_bunga" => $this->request->getPost('suku_bunga'),
-                "tanggal_menunggak" => $this->request->getPost('tanggal_menunggak'),
-                "tanggal_realisasi" => $this->request->getPost('tanggal_realisasi'),
-                "tanggal_jatuh_tempo" => $this->request->getPost('tanggal_jatuh_tempo'),
-                "jangka_waktu" => $this->request->getPost('jangka_waktu'),
-                "flag" => $this->request->getPost('flag'),
-                "cif" => $this->request->getPost('cif'),
-                "1" => $this->request->getPost('1'),
-                "2" => $this->request->getPost('2'),
-                "3" => $this->request->getPost('3'),
-                "4" => $this->request->getPost('4'),
-                "5" => $this->request->getPost('5'),
-                "tunggakan_pokok" => $this->request->getPost('tunggakan_pokok'),
-                "tunggakan_bunga" => $this->request->getPost('tunggakan_bunga'),
-                "tunggakan_pinalti" => $this->request->getPost('tunggakan_pinalti'),
-                "personal_number" => $this->request->getPost('personal_number'),
-                "nama_pn" => $this->request->getPost('nama_pn'),
-                "kode" => $this->request->getPost('kode'),
-                "deskripsi" => $this->request->getPost('deskripsi'),
-                "kol" => $this->request->getPost('kol'),
-                "rata_os" => $this->request->getPost('rata_os'),
-                "kecamatan" => $this->request->getPost('kecamatan'),
-                "kelurahan" => $this->request->getPost('kelurahan'),
-                "kode_pos" => $this->request->getPost('kode_pos'),
-                "kecamatan_usaha" => $this->request->getPost('kecamatan_usaha'),
-                "kelurahan_usaha" => $this->request->getPost('kelurahan_usaha'),
-                "kode_pos_usaha" => $this->request->getPost('kode_pos_usaha'),
-            ]);
-
-            $redirectURL = site_url("controller/method/$rm");
-            return redirect()->to($redirectURL);
-        }
-
-    }
-
-    public function delete($id){
-        $model = new centralizedModel();
-        $model->delete($id);
-        return redirect('/rm/all');
-    }
-
-    public function edit($id){
-        $model = new centralizedModel();
-        $rm = $this->request->getPost('nama_pn');
-        $model->update([$id,
-            "periode" => $this->request->getPost('periode'),
-            "cabang" => $this->request->getPost('cabang'),
-            "mata_uang" => $this->request->getPost('mata_uang'),
-            "marketing" => $this->request->getPost('marketing'),
-            "tipe_pinjaman" => $this->request->getPost('tipe_pinjaman'),
-            "no_rek" => $this->request->getPost('no_rek'),
-            "debitur" => $this->request->getPost('debitur'),
-            "pinjaman" => $this->request->getPost('pinjaman'),
-            "tanggal_bayar" => $this->request->getPost('tanggal_bayar'),
-            "tanggal_bunga_bayar" => $this->request->getPost('tanggal_bunga_bayar'),
-            "suku_bunga" => $this->request->getPost('suku_bunga'),
-            "tanggal_menunggak" => $this->request->getPost('tanggal_menunggak'),
-            "tanggal_realisasi" => $this->request->getPost('tanggal_realisasi'),
-            "tanggal_jatuh_tempo" => $this->request->getPost('tanggal_jatuh_tempo'),
-            "jangka_waktu" => $this->request->getPost('jangka_waktu'),
-            "flag" => $this->request->getPost('flag'),
-            "cif" => $this->request->getPost('cif'),
-            "1" => $this->request->getPost('1'),
-            "2" => $this->request->getPost('2'),
-            "3" => $this->request->getPost('3'),
-            "4" => $this->request->getPost('4'),
-            "5" => $this->request->getPost('5'),
-            "tunggakan_pokok" => $this->request->getPost('tunggakan_pokok'),
-            "tunggakan_bunga" => $this->request->getPost('tunggakan_bunga'),
-            "tunggakan_pinalti" => $this->request->getPost('tunggakan_pinalti'),
-            "personal_number" => $this->request->getPost('personal_number'),
-            "nama_pn" => $this->request->getPost('nama_pn'),
-            "kode" => $this->request->getPost('kode'),
-            "deskripsi" => $this->request->getPost('deskripsi'),
-            "kol" => $this->request->getPost('kol'),
-            "rata_os" => $this->request->getPost('rata_os'),
-            "kecamatan" => $this->request->getPost('kecamatan'),
-            "kelurahan" => $this->request->getPost('kelurahan'),
-            "kode_pos" => $this->request->getPost('kode_pos'),
-            "kecamatan_usaha" => $this->request->getPost('kecamatan_usaha'),
-            "kelurahan_usaha" => $this->request->getPost('kelurahan_usaha'),
-            "kode_pos_usaha" => $this->request->getPost('kode_pos_usaha'),
-        ]);
-        $redirectURL = site_url("controller/method/$rm");
-        return redirect()->to($redirectURL);
-        
     }
 
     function StandardizeDate($inputDate) {
